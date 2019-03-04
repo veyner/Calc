@@ -4,11 +4,15 @@ using System.Text.RegularExpressions;
 
 namespace Calc
 {
-    public enum Mode { RAD, DEG, GRAD };
-
     public class Parser
     {
         private string Value;
+        private Solver _solver;
+
+        public Parser(Solver solver)
+        {
+            _solver = solver;
+        }
 
         public string Evaluate(string expression)
         {
@@ -43,6 +47,7 @@ namespace Calc
                 //                          --
                 regEx = new Regex("pi", RegexOptions.IgnoreCase);
                 expression = regEx.Replace(expression, Math.PI.ToString());
+
                 // Поиск и вычисление выражений в скобках
                 //                                                       _____
                 // -(5-10)^(-1)*(3+2*(cos(3*3,14)+(2+ln(exp(1)))^3)) -> -{-5}^(-1)*(3+2*(cos(3*3,14)+(2+ln(exp(1)))^3))
@@ -83,9 +88,9 @@ namespace Calc
                 {
                     if (m.Groups[3].Value.Length > 0)
                     {
-                        expression = expression.Replace(m.Value, "{" + m.Groups[1].Value + new Solver().Solve(m.Groups[2].Value) + "}" + m.Groups[3].Value);
+                        expression = expression.Replace(m.Value, "{" + m.Groups[1].Value + _solver.Solve(m.Groups[2].Value) + "}" + m.Groups[3].Value);
                     }
-                    else expression = expression.Replace(m.Value, m.Groups[1].Value + new Solver().Solve(m.Groups[2].Value));
+                    else expression = expression.Replace(m.Value, m.Groups[1].Value + _solver.Solve(m.Groups[2].Value));
                     m = regEx.Match(expression);
                 }
                 // Если нет скобок, вычисление выражения
@@ -93,7 +98,7 @@ namespace Calc
                 // -{-5}^-1*55 => 11
                 // |_________|
                 //
-                Value = new Solver().Solve(expression);
+                Value = _solver.Solve(expression);
                 return Value;
             }
             catch

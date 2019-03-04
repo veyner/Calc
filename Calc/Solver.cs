@@ -6,42 +6,22 @@ namespace Calc
 {
     public class Solver
     {
-        private ArrayList FunctionList = new ArrayList(new string[] { "abs", "acos", "asin", "atan", "ceil", "cos", "cosh", "exp", "floor", "ln", "log", "sign", "sin", "sinh", "sqrt", "tan", "tanh" });
-        private double Factor;
-        private Mode mode;
+        private ArrayList functionList = new ArrayList(new string[] { "abs", "acos", "asin", "atan", "ceil", "cos", "cosh", "exp", "floor", "ln", "log", "sign", "sin", "sinh", "sqrt", "tan", "tanh" });
+        private double factor = 1.0;
 
-        // Constructor
-        public Solver()
+        public void RadFactor()
         {
-            Mode = Mode.RAD;
+            factor = 1.0;
         }
 
-        public Solver(Mode mode)
+        public void DegFactor()
         {
-            Mode = mode;
+            factor = 2.0 * Math.PI / 360.0;
         }
 
-        public Mode Mode
+        public void GradFactor()
         {
-            get { return this.mode; }
-            set
-            {
-                this.mode = value;
-                switch (value)
-                {
-                    case Mode.RAD:
-                        this.Factor = 1.0;
-                        break;
-
-                    case Mode.DEG:
-                        this.Factor = 2.0 * Math.PI / 360.0;
-                        break;
-
-                    case Mode.GRAD:
-                        this.Factor = 2.0 * Math.PI / 400.0;
-                        break;
-                }
-            }
+            factor = 2.0 * Math.PI / 400.0;
         }
 
         /// <summary>
@@ -57,7 +37,7 @@ namespace Calc
              */
             Regex regEx = new Regex(@"([a-z]{2,})([\+-]?\d+,*\d*[eE][\+-]*\d+|[\+-]?\d+,*\d*)", RegexOptions.IgnoreCase);
             Match m = regEx.Match(expression);
-            while (m.Success && FunctionList.IndexOf(m.Groups[1].Value.ToLower()) > -1)
+            while (m.Success && functionList.IndexOf(m.Groups[1].Value.ToLower()) > -1)
             {
                 switch (m.Groups[1].Value.ToLower())
                 {
@@ -66,19 +46,19 @@ namespace Calc
                         m = regEx.Match(expression);
                         continue;
                     case "acos":
-                        expression = expression.Replace(m.Groups[0].Value, Math.Acos(Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
+                        expression = expression.Replace(m.Groups[0].Value, Math.Acos(factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
                         m = regEx.Match(expression);
                         continue;
                     case "asin":
-                        expression = expression.Replace(m.Groups[0].Value, Math.Asin(Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
+                        expression = expression.Replace(m.Groups[0].Value, Math.Asin(factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
                         m = regEx.Match(expression);
                         continue;
                     case "atan":
-                        expression = expression.Replace(m.Groups[0].Value, Math.Atan(Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
+                        expression = expression.Replace(m.Groups[0].Value, Math.Atan(factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
                         m = regEx.Match(expression);
                         continue;
                     case "cos":
-                        expression = expression.Replace(m.Groups[0].Value, Math.Cos(Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
+                        expression = expression.Replace(m.Groups[0].Value, Math.Cos(factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
                         m = regEx.Match(expression);
                         continue;
                     case "ceil":
@@ -86,7 +66,7 @@ namespace Calc
                         m = regEx.Match(expression);
                         continue;
                     case "cosh":
-                        expression = expression.Replace(m.Groups[0].Value, Math.Cosh(Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
+                        expression = expression.Replace(m.Groups[0].Value, Math.Cosh(factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
                         m = regEx.Match(expression);
                         continue;
                     case "exp":
@@ -110,11 +90,11 @@ namespace Calc
                         m = regEx.Match(expression);
                         continue;
                     case "sin":
-                        expression = expression.Replace(m.Groups[0].Value, Math.Sin(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
+                        expression = expression.Replace(m.Groups[0].Value, Math.Sin(this.factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
                         m = regEx.Match(expression);
                         continue;
                     case "sinh":
-                        expression = expression.Replace(m.Groups[0].Value, Math.Sinh(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
+                        expression = expression.Replace(m.Groups[0].Value, Math.Sinh(this.factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
                         m = regEx.Match(expression);
                         continue;
                     case "sqrt":
@@ -122,11 +102,11 @@ namespace Calc
                         m = regEx.Match(expression);
                         continue;
                     case "tan":
-                        expression = expression.Replace(m.Groups[0].Value, Math.Tan(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
+                        expression = expression.Replace(m.Groups[0].Value, Math.Tan(this.factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
                         m = regEx.Match(expression);
                         continue;
                     case "tanh":
-                        expression = expression.Replace(m.Groups[0].Value, Math.Tanh(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
+                        expression = expression.Replace(m.Groups[0].Value, Math.Tanh(this.factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
                         m = regEx.Match(expression);
                         continue;
                 }
@@ -147,27 +127,52 @@ namespace Calc
             while (m.Success)
             {
                 double n = Convert.ToDouble(m.Groups[1].Value);
-                if ((n < 0) && (n != Math.Round(n)))
+                if ((n < 0) || (n != Math.Round(n)))
                 {
-                    throw new Exception(); // Если значение отрицательное или не целое - выдать ошибку
+                    expression = "factorial solve error";
+                    break;
+                    // Если значение отрицательное или не целое - выдать ошибку
                 }
                 expression = regEx.Replace(expression, Fact(Convert.ToDouble(m.Groups[1].Value)).ToString(), 1);
                 m = regEx.Match(expression);
             }
-            // Расшифровка шаблона Regex  - один из знаков + -, цифры, запятая, цифры, e или E(*10^X),один из знаков + -, цифры, знак факториала
-            regEx = new Regex(@"(\d+,*\d*[eE][\+-]?\d+|\d+,*\d*)!"); // Search for patterns like 5!
+
+            // Расшифровка шаблона Regex  - цифры, запятая, цифры, e или E(*10^X),один из знаков + -, цифры, знак факториала
+            /*
+             */
+            regEx = new Regex(@"(\d|[a-z]|[\(\)])*([\+\-\*\/\(\)])*(\d+,*\d*[eE][\+-]?\d+|\d+,*\d*)!");
             m = regEx.Match(expression);
             while (m.Success)
             {
-                double n = Convert.ToDouble(m.Groups[1].Value);
-                if ((n < 0) && (n != Math.Round(n)))
+                if (m.Groups[1].Value.Length == 0)
                 {
-                    throw new Exception(); // Value negative or not integer -> throw exception
+                    if (m.Groups[2].Value == "-")
+                    {
+                        expression = "factorial solve error";
+                        break;
+                    }
                 }
-                expression = regEx.Replace(expression, Fact(Convert.ToDouble(m.Groups[1].Value)).ToString(), 1);
-                m = regEx.Match(expression);
+
+                double n = Convert.ToDouble(m.Groups[3].Value);
+                if ((n < 0) || (n != Math.Round(n)))
+                {
+                    expression = "factorial solve error";
+                    break;
+                    // Если значение отрицательное или не целое - выдать ошибку
+                }
+                else
+                {
+                    expression = regEx.Replace(expression, m.Groups[1].Value + m.Groups[2].Value + Fact(Convert.ToDouble(m.Groups[3].Value)).ToString(), 1);
+                    m = regEx.Match(expression);
+                }
             }
             return expression;
+        }
+
+        // Вычисление факториала
+        private double Fact(double n)
+        {
+            return n == 0.0 ? 1.0 : n * Fact(n - 1.0);
         }
 
         /// <summary>
@@ -192,7 +197,7 @@ namespace Calc
              * (\d+,*\d*e[\+-]?\d+|\d+,*\d*) - цифры, запятая, цифры, е, один из знаков +-, цифры или цифры, запятая, цифры
              * (-?\d+,*\d*[eE][\+-]?\d+|-?\d+,*\d*) - знак -, цифры, запятая, цифры, один из е Е, один из знаков + -, цифры или знак -,цифры,запятая,цифры
              */
-            regEx = new Regex(@"(\d+,*\d*e[\+-]?\d+|\d+,*\d*)\^(-?\d+,*\d*[eE][\+-]?\d+|-?\d+,*\d*)");
+            regEx = new Regex(@"(-?\d+,*\d*e[\+-]?\d+|-?\d+,*\d*)\^(-?\d+,*\d*[eE][\+-]?\d+|-?\d+,*\d*)");
             m = regEx.Match(expression, 0);
             while (m.Success)
             {
@@ -308,12 +313,6 @@ namespace Calc
 
             if (expression.StartsWith("--")) expression = expression.Substring(2);
             return expression;
-        }
-
-        // Calculate Factorial.
-        private double Fact(double n)
-        {
-            return n == 0.0 ? 1.0 : n * Fact(n - 1.0);
         }
     }
 }
