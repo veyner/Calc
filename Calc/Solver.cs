@@ -140,31 +140,19 @@ namespace Calc
             // Расшифровка шаблона Regex  - цифры, запятая, цифры, e или E(*10^X),один из знаков + -, цифры, знак факториала
             /*
              */
-            regEx = new Regex(@"(\d|[a-z]|[\(\)])*([\+\-\*\/\(\)])*(\d+,*\d*[eE][\+-]?\d+|\d+,*\d*)!");
+            regEx = new Regex(@"(\d+,*\d*[eE][\+-]?\d+|\d+,*\d*)!");
             m = regEx.Match(expression);
             while (m.Success)
             {
-                if (m.Groups[1].Value.Length == 0)
-                {
-                    if (m.Groups[2].Value == "-")
-                    {
-                        expression = "factorial solve error";
-                        break;
-                    }
-                }
-
-                double n = Convert.ToDouble(m.Groups[3].Value);
+                double n = Convert.ToDouble(m.Groups[1].Value);
                 if ((n < 0) || (n != Math.Round(n)))
                 {
                     expression = "factorial solve error";
                     break;
                     // Если значение отрицательное или не целое - выдать ошибку
                 }
-                else
-                {
-                    expression = regEx.Replace(expression, m.Groups[1].Value + m.Groups[2].Value + Fact(Convert.ToDouble(m.Groups[3].Value)).ToString(), 1);
-                    m = regEx.Match(expression);
-                }
+                expression = regEx.Replace(expression, Fact(Convert.ToDouble(m.Groups[1].Value)).ToString(), 1);
+                m = regEx.Match(expression);
             }
             return expression;
         }
