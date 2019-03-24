@@ -434,7 +434,7 @@
             // 
             // expButton
             // 
-            this.expButton.Location = new System.Drawing.Point(66, 172);
+            this.expButton.Location = new System.Drawing.Point(64, 172);
             this.expButton.Name = "expButton";
             this.expButton.Size = new System.Drawing.Size(53, 31);
             this.expButton.TabIndex = 37;
@@ -485,7 +485,7 @@
             // 
             // sinHypButton
             // 
-            this.sinHypButton.Location = new System.Drawing.Point(66, 202);
+            this.sinHypButton.Location = new System.Drawing.Point(64, 202);
             this.sinHypButton.Name = "sinHypButton";
             this.sinHypButton.Size = new System.Drawing.Size(53, 31);
             this.sinHypButton.TabIndex = 45;
@@ -495,7 +495,7 @@
             // 
             // cosHypButton
             // 
-            this.cosHypButton.Location = new System.Drawing.Point(66, 232);
+            this.cosHypButton.Location = new System.Drawing.Point(64, 232);
             this.cosHypButton.Name = "cosHypButton";
             this.cosHypButton.Size = new System.Drawing.Size(53, 31);
             this.cosHypButton.TabIndex = 44;
@@ -505,7 +505,7 @@
             // 
             // tanHypButton
             // 
-            this.tanHypButton.Location = new System.Drawing.Point(66, 262);
+            this.tanHypButton.Location = new System.Drawing.Point(64, 262);
             this.tanHypButton.Name = "tanHypButton";
             this.tanHypButton.Size = new System.Drawing.Size(53, 31);
             this.tanHypButton.TabIndex = 43;

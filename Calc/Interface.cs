@@ -7,18 +7,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace Calc
 {
     public partial class Interface : Form
     {
+        private string[] functionList = new string[] { "abs", "acos", "asin", "atan", "ceil", "cos", "cosh", "exp", "floor", "ln", "log", "sign", "sin", "sinh", "sqrt", "tan", "tanh" };
+        private string[] operationList = new string[] { "+", "-", "/", "*", "^", "," };
         private string memory = "0";
         private Solver solver;
+        private int openBracket = 0;
 
         public Interface()
         {
             InitializeComponent();
             solver = new Solver();
+            RadRadioButton.Select();
         }
 
         private void Interface_Load(object sender, EventArgs e)
@@ -32,133 +38,93 @@ namespace Calc
 
         private void ExampleTextBox_TextChanged(object sender, EventArgs e)
         {
-            exampleTextBox.SelectionStart = exampleTextBox.Text.Length;
         }
 
         private void ExpButton_Click(object sender, EventArgs e)
         {
-            //exampleTextBox.Text += "exp";
-            var insertText = "exp";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("exp", functionList);
         }
 
         private void Button1_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "1";
-            var insertText = "1";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("1");
+            //var insertText = "1";
+            //var selectionIndex = exampleTextBox.SelectionStart;
+            //exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
+            //exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
         }
 
         private void Button2_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "2";
-            var insertText = "2";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("2");
         }
 
         private void Button3_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "3";
-            var insertText = "3";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("3");
         }
 
         private void Button4_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "4";
-            var insertText = "4";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("4");
         }
 
         private void Button5_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "5";
-            var insertText = "5";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("5");
         }
 
         private void Button6_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "6";
-            var insertText = "6";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("6");
         }
 
         private void Button7_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "7";
-            var insertText = "7";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("7");
         }
 
         private void Button8_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "8";
-            var insertText = "8";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("8");
         }
 
         private void Button9_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "9";
-            var insertText = "9";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("9");
         }
 
         private void PlusButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "+";
-            var insertText = "+";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("+", operationList);
         }
 
         private void MinusButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "-";
-            var insertText = "-";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("-", operationList);
         }
 
         private void DivButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "/";
-            var insertText = "/";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("/", operationList);
         }
 
         private void MultiplButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "*";
-            var insertText = "*";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("*", operationList);
         }
 
         private void EqualButton_Click(object sender, EventArgs e)
@@ -166,7 +132,7 @@ namespace Calc
             var result = new Parser(solver).Evaluate(exampleTextBox.Text);
 
             var k = double.TryParse(result, out double a);
-            if (k == false)
+            if (!k)
             {
                 answerTextBox.Text = "error, incorrect expression";
             }
@@ -179,17 +145,17 @@ namespace Calc
 
         private void BackSpaceButton_Click(object sender, EventArgs e)
         {
-            var expression = exampleTextBox.Text;
-            string newExpression = "";
-            if (expression.Length > 0)
+            // возможность удалить символ по текущему положению курсора
+            var selectionIndex = exampleTextBox.SelectionStart;
+            var text = exampleTextBox.Text;
+            string left = text.Substring(0, selectionIndex);
+            string right = text.Substring(selectionIndex);
+            if (!string.IsNullOrWhiteSpace(left))
             {
-                newExpression = expression.Remove(expression.Length - 1);
+                left = left.Substring(0, left.Length - 1);
             }
-            if (expression.Length == 0)
-            {
-                newExpression = expression;
-            }
-            exampleTextBox.Text = newExpression;
+            exampleTextBox.Text = left + right;
+            exampleTextBox.SelectionStart = left.Length;
         }
 
         private void DelButton_Click(object sender, EventArgs e)
@@ -205,146 +171,97 @@ namespace Calc
 
         private void SqrtButton_Click(object sender, EventArgs e)
         {
-            //exampleTextBox.Text += "sqrt";
-            var insertText = "sqrt";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("sqrt", functionList);
         }
 
         private void InvolButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "^";
-            var insertText = "^";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("^", operationList);
         }
 
         private void Button0_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "0";
-            var insertText = "0";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("0");
         }
 
         private void ButtonDot_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += ",";
-            var insertText = ",";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction(",", operationList);
         }
 
         private void SinButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "sin";
-            var insertText = "sin";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("sin", functionList);
         }
 
         private void CosButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "cos";
-            var insertText = "cos";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("cos", functionList);
         }
 
         private void TanButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "tan";
-            var insertText = "tan";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("tan", functionList);
         }
 
         private void ArcSinButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "asin";
-            var insertText = "asin";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("asin", functionList);
         }
 
         private void ArcCosButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "acos";
-            var insertText = "acos";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("acos", functionList);
         }
 
         private void ArcTanButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "atan";
-            var insertText = "atan";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("atan", functionList);
         }
 
         private void SinHypButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "sinh";
-            var insertText = "sinh";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("sinh", functionList);
         }
 
         private void CosHypButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "cosh";
-            var insertText = "cosh";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("cosh", functionList);
         }
 
         private void TanHypButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "tanh";
-            var insertText = "tanh";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("tanh", functionList);
         }
 
         private void LogButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "log";
-            var insertText = "log";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("log", functionList);
         }
 
         private void LnButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "ln";
-            var insertText = "ln";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertFunction("ln", functionList);
         }
 
         private void FactorButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "!";
-            var insertText = "!";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("!");
         }
 
         private void DelXButton_Click(object sender, EventArgs e)
@@ -355,26 +272,32 @@ namespace Calc
         private void MemDelButton_Click(object sender, EventArgs e)
         {
             memoryNumberLabel.Text = "0";
+            memory = "0";
         }
 
         private void MemPlusButton_Click(object sender, EventArgs e)
         {
-            memory = (int.Parse(memory) + int.Parse(answerTextBox.Text)).ToString();
-            memoryNumberLabel.Text = memory;
+            var k = double.TryParse(answerTextBox.Text, out double a);
+            if (k)
+            {
+                memory = (int.Parse(memory) + int.Parse(answerTextBox.Text)).ToString();
+                memoryNumberLabel.Text = memory;
+            }
         }
 
         private void MemMinusButton_Click(object sender, EventArgs e)
         {
-            memory = (int.Parse(memory) - int.Parse(answerTextBox.Text)).ToString();
-            memoryNumberLabel.Text = memory;
+            var k = double.TryParse(answerTextBox.Text, out double a);
+            if (k)
+            {
+                memory = (int.Parse(memory) - int.Parse(answerTextBox.Text)).ToString();
+                memoryNumberLabel.Text = memory;
+            }
         }
 
         private void MemRemButton_Click(object sender, EventArgs e)
         {
-            var insertText = memory;
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol(memory);
         }
 
         private void MemSaveButton_Click(object sender, EventArgs e)
@@ -390,19 +313,24 @@ namespace Calc
         private void OpenBraketButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "(";
-            var insertText = "(";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            InsertSymbol("(");
+            openBracket++;
+            openBraketButton.Text = "( " + openBracket;
         }
 
         private void CloseBraketButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += ")";
-            var insertText = ")";
-            var selectionIndex = exampleTextBox.SelectionStart;
-            exampleTextBox.Text = exampleTextBox.Text.Insert(selectionIndex, insertText);
-            exampleTextBox.SelectionStart = selectionIndex + insertText.Length;
+            if (openBracket > 0)
+            {
+                InsertSymbol(")");
+                openBracket--;
+                openBraketButton.Text = "( " + openBracket;
+                if (openBracket == 0)
+                {
+                    openBraketButton.Text = "( ";
+                }
+            }
         }
 
         private void RadRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -418,6 +346,60 @@ namespace Calc
         private void GradRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             solver.GradFactor();
+        }
+
+        /// <summary>
+        /// Проверка последних введенных символов в строку (там где стоит курсор)
+        /// если там стояла функция, то произойдет замена на введенную функцию
+        /// </summary>
+        /// <param name="example">строка, где нужно проверить/заменить функцию</param>
+        /// <param name="function">текущая введенная функция</param>
+        /// <param name="functions">лист функций</param>
+        /// <returns></returns>
+        private string ChangeFunction(string example, string function, string[] functions)
+        {
+            string newExample = example;
+            foreach (string func in functions)
+            {
+                if (example.EndsWith(func))
+                {
+                    newExample = example.Substring(0, example.Length - func.Length);
+                    break;
+                }
+            }
+            return newExample + function;
+        }
+
+        /// <summary>
+        /// Метод для ввода функции в строку
+        /// </summary>
+        /// <param name="func">введенная функция</param>
+        /// <param name="functions">лист функций для метода проверки и замены функций</param>
+        private void InsertFunction(string func, string[] functions)
+        {
+            var selectionIndex = exampleTextBox.SelectionStart; //текущее положение курсора, который разделяет строку на 2 части
+            var text = exampleTextBox.Text;
+            //Разделение строки - возможность ввести функцию или символ по текущему положению курсора и для проверки и замены повторно введенной функции
+            string left = text.Substring(0, selectionIndex); // левая часть строки
+            string right = text.Substring(selectionIndex); // правая часть строки
+            left = ChangeFunction(left, func, functions);
+            exampleTextBox.Text = left + right;
+            exampleTextBox.SelectionStart = left.Length; // установка курсора в место, где он должен находиться после подстановки функции в строку
+        }
+
+        /// <summary>
+        /// ввод символов в строку
+        /// </summary>
+        /// <param name="symbol">текущий введенный символ</param>
+        private void InsertSymbol(string symbol)
+        {
+            var selectionIndex = exampleTextBox.SelectionStart;
+            var text = exampleTextBox.Text;
+            string left = text.Substring(0, selectionIndex);
+            string right = text.Substring(selectionIndex);
+            left += symbol;
+            exampleTextBox.Text = left + right;
+            exampleTextBox.SelectionStart = left.Length;
         }
     }
 }
