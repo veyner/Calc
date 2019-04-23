@@ -18,13 +18,21 @@ namespace Calc
         private string[] operationList = new string[] { "+", "-", "/", "*", "^", "," };
         private string memory = "0";
         private Solver solver;
-        private int openBracket = 0;
+        private int openBracket;
+        private int maxLength = 30;
+        private bool enableCom;
+        private bool operationIntroduced;
+        private bool enableFactorial;
 
         public Interface()
         {
             InitializeComponent();
             solver = new Solver();
             RadRadioButton.Select();
+            openBracket = 0;
+            enableCom = false;
+            operationIntroduced = true;
+            enableFactorial = false;
         }
 
         private void Interface_Load(object sender, EventArgs e)
@@ -118,13 +126,19 @@ namespace Calc
         private void DivButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "/";
-            InsertFunction("/", operationList);
+            if (!string.IsNullOrWhiteSpace(exampleTextBox.Text))
+            {
+                InsertFunction("/", operationList);
+            }
         }
 
         private void MultiplButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "*";
-            InsertFunction("*", operationList);
+            if (!string.IsNullOrWhiteSpace(exampleTextBox.Text))
+            {
+                InsertFunction("*", operationList);
+            }
         }
 
         private void EqualButton_Click(object sender, EventArgs e)
@@ -140,6 +154,7 @@ namespace Calc
             {
                 answerTextBox.Text = result;
                 exampleTextBox.Text = result;
+                exampleTextBox.SelectionStart = exampleTextBox.Text.Length;
             }
         }
 
@@ -167,6 +182,8 @@ namespace Calc
         {
             exampleTextBox.Text = null;
             answerTextBox.Text = "0";
+            enableCom = false;
+            operationIntroduced = true;
         }
 
         private void SqrtButton_Click(object sender, EventArgs e)
@@ -189,7 +206,12 @@ namespace Calc
         private void ButtonDot_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += ",";
-            InsertFunction(",", operationList);
+            if (enableCom)
+            {
+                InsertFunction(",", operationList);
+                enableCom = false;
+                operationIntroduced = false;
+            }
         }
 
         private void SinButton_Click(object sender, EventArgs e)
@@ -261,7 +283,10 @@ namespace Calc
         private void FactorButton_Click(object sender, EventArgs e)
         {
             //exampleTextBox.Text += "!";
-            InsertSymbol("!");
+            if (enableFactorial)
+            {
+                InsertSymbol("!");
+            }
         }
 
         private void DelXButton_Click(object sender, EventArgs e)
@@ -297,7 +322,10 @@ namespace Calc
 
         private void MemRemButton_Click(object sender, EventArgs e)
         {
-            InsertSymbol(memory);
+            if (memory != "0")
+            {
+                InsertSymbol(memory);
+            }
         }
 
         private void MemSaveButton_Click(object sender, EventArgs e)
@@ -316,6 +344,8 @@ namespace Calc
             InsertSymbol("(");
             openBracket++;
             openBraketButton.Text = "( " + openBracket;
+            operationIntroduced = true;
+            enableFactorial = false;
         }
 
         private void CloseBraketButton_Click(object sender, EventArgs e)
@@ -330,6 +360,8 @@ namespace Calc
                 {
                     openBraketButton.Text = "( ";
                 }
+                enableFactorial = false;
+                //operationIntroduced = true;
             }
         }
 
@@ -377,14 +409,19 @@ namespace Calc
         /// <param name="functions">лист функций для метода проверки и замены функций</param>
         private void InsertFunction(string func, string[] functions)
         {
-            var selectionIndex = exampleTextBox.SelectionStart; //текущее положение курсора, который разделяет строку на 2 части
-            var text = exampleTextBox.Text;
-            //Разделение строки - возможность ввести функцию или символ по текущему положению курсора и для проверки и замены повторно введенной функции
-            string left = text.Substring(0, selectionIndex); // левая часть строки
-            string right = text.Substring(selectionIndex); // правая часть строки
-            left = ChangeFunction(left, func, functions);
-            exampleTextBox.Text = left + right;
-            exampleTextBox.SelectionStart = left.Length; // установка курсора в место, где он должен находиться после подстановки функции в строку
+            if (exampleTextBox.Text.Length < maxLength)
+            {
+                var selectionIndex = exampleTextBox.SelectionStart; //текущее положение курсора, который разделяет строку на 2 части
+                var text = exampleTextBox.Text;
+                //Разделение строки - возможность ввести функцию или символ по текущему положению курсора и для проверки и замены повторно введенной функции
+                string left = text.Substring(0, selectionIndex); // левая часть строки
+                string right = text.Substring(selectionIndex); // правая часть строки
+                left = ChangeFunction(left, func, functions);
+                exampleTextBox.Text = left + right;
+                exampleTextBox.SelectionStart = left.Length; // установка курсора в место, где он должен находиться после подстановки функции в строку
+            }
+            operationIntroduced = true;
+            enableFactorial = false;
         }
 
         /// <summary>
@@ -393,13 +430,22 @@ namespace Calc
         /// <param name="symbol">текущий введенный символ</param>
         private void InsertSymbol(string symbol)
         {
-            var selectionIndex = exampleTextBox.SelectionStart;
-            var text = exampleTextBox.Text;
-            string left = text.Substring(0, selectionIndex);
-            string right = text.Substring(selectionIndex);
-            left += symbol;
-            exampleTextBox.Text = left + right;
-            exampleTextBox.SelectionStart = left.Length;
+            if (exampleTextBox.Text.Length < maxLength)
+            {
+                var selectionIndex = exampleTextBox.SelectionStart;
+                var text = exampleTextBox.Text;
+                string left = text.Substring(0, selectionIndex);
+                string right = text.Substring(selectionIndex);
+                left += symbol;
+                exampleTextBox.Text = left + right;
+                exampleTextBox.SelectionStart = left.Length;
+            }
+            if (operationIntroduced)
+            {
+                enableCom = true;
+                operationIntroduced = false;
+            }
+            enableFactorial = true;
         }
     }
 }
